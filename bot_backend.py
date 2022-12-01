@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, flash, redirect, url_for
 from forms import RegistrateMainUserForm, LoginForm, RegistrateSubUserForm, RegistrateCameraForm, RegistrateHouseForm
 from waitress import serve
 import time
@@ -85,18 +85,41 @@ def recibir_mensajes():
 def home():
     return render_template("home.html", posts=posts)
 
-@app.route("/registrarUsuario")
+
+@app.route("/registrarUsuario", methods=['POST', "GET"])
 def registrarUsuario():
     form = RegistrateMainUserForm()
+
+    if form.validate_on_submit():
+
+        flash(f"Cuenta creada con exito", category="success")
+
+        return redirect(url_for("login"))
 
     return render_template("registrarUsuario.html", title="Registrar", form=form)
 
 
 @app.route("/login")
-def registrarUsuario():
+def login():
     form = LoginForm()
 
     return render_template("login.html", title="Login", form=form)
+
+@app.route("/registrarCamara")
+def registrarCamara():
+
+    form = RegistrateHouseForm()
+
+    return render_template("registrarCasa.html", title="Casa", form=form)
+
+
+@app.route("/registrarCasa")
+def registrarCasa():
+
+    form = RegistrateHouseForm()
+
+    return render_template("registrarCasa.html", title="Casa", form=form)
+
 
 
 @app.route("/about")

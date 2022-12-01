@@ -12,7 +12,7 @@ class RegistrateMainUserForm(FlaskForm):
 
     password = PasswordField("Contraseña: ", validators=[DataRequired(), Length(2,32)])
     confirm_password = PasswordField("Confirmar contraseña: ", validators=[DataRequired(), 
-                                    Length(2,32), EqualTo(password)])
+                                    Length(2,32), EqualTo("password")])
 
     tipo = SelectField("Tipo de usuario: ", choices=[("Primario", "Primario"), ("Secundario", "Secundario")])
     
@@ -27,7 +27,7 @@ class RegistrateSubUserForm(FlaskForm):
 
     password = PasswordField("Contraseña: ", validators=[DataRequired(), Length(2,32)])
     confirm_password = PasswordField("Confirmar contraseña: ", validators=[DataRequired(), 
-                                    Length(2,32), EqualTo(password)])
+                                    Length(2,32), EqualTo("password")])
 
     tipo = SelectField("Tipo de usuario: ", choices=[("Primario", "Primario"), ("Secundario", "Secundario")])
 
