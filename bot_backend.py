@@ -1,4 +1,5 @@
 from flask import Flask, render_template
+from forms import RegistrateMainUserForm, LoginForm, RegistrateSubUserForm, RegistrateCameraForm, RegistrateHouseForm
 from waitress import serve
 import time
 from config import *  # importamod token
@@ -7,6 +8,8 @@ import threading
 from telebot.types import ForceReply
 
 app = Flask(__name__)
+
+app.config['SECRET_KEY'] = "073f2f7a1f493b43348ad5dacbfa9768"
 
 bot = telebot.TeleBot(TELEGRAM_TOKEN)
 
@@ -81,6 +84,20 @@ def recibir_mensajes():
 @app.route("/home")
 def home():
     return render_template("home.html", posts=posts)
+
+@app.route("/registrarUsuario")
+def registrarUsuario():
+    form = RegistrateMainUserForm()
+
+    return render_template("registrarUsuario.html", title="Registrar", form=form)
+
+
+@app.route("/login")
+def registrarUsuario():
+    form = LoginForm()
+
+    return render_template("login.html", title="Login", form=form)
+
 
 @app.route("/about")
 def about():
