@@ -1,0 +1,35 @@
+//entrar a la terminal de python
+from bot_backend import app, db
+
+
+//to create the database
+app.app_context().push()
+db.create_all()
+
+casa = Casa(direccion="Remigio Tamariz", numero_direccion="3-100")
+casa2 = Casa(direccion="Mariano Cueva", numero_direccion="10-88")
+
+
+//add an object to the database
+db.session.add(casa)
+db.session.add(casa2)
+
+//commit changes
+db.session.changes()
+
+//read data from Casa
+Casa.query.all()
+Casa.query.first()
+
+//for the last element
+c = db.session.query(Casa).order_by(Casa.id.desc()).first()
+
+
+//crear Usuario
+user = Usuario(nombre="Adolfo", apellido="Jara", email="gavilanesadolfo@gmail.com", password="1234", tipo="Primario", casa_id=c.id)
+
+db.session.add(user)
+db.session.commit()
+
+//drop all the data
+db.drop_all()

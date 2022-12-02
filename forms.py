@@ -48,6 +48,7 @@ class LoginForm(FlaskForm):
 class RegistrateHouseForm(FlaskForm):
 
     direccion = StringField("Dirección: ", validators=[DataRequired(), Length(2,150)])
+    numero_direccion = StringField("Número dirección: ", validators=[Length(2,12)])
     
     submit = SubmitField("Enviar")
 
