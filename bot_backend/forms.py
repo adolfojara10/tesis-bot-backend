@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, IntegerField, SelectField
-from wtforms.validators import DataRequired, Length, Email, EqualTo
+from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
+from bot_backend.models import Usuario
 
 
 class RegistrateMainUserForm(FlaskForm):
@@ -14,9 +15,18 @@ class RegistrateMainUserForm(FlaskForm):
     confirm_password = PasswordField("Confirmar contraseña: ", validators=[DataRequired(), 
                                     Length(2,32), EqualTo("password")])
 
-    tipo = SelectField("Tipo de usuario: ", choices=[("Primario", "Primario"), ("Secundario", "Secundario")])
+    #tipo = SelectField("Tipo de usuario: ", choices=[("Primario", "Primario"), ("Secundario", "Secundario")])
     
     submit = SubmitField("Crear usuario")
+
+    def validate_email(self, email):
+
+        usuario = Usuario.query.filter_by(email=email.data).first()
+
+        if usuario:
+            raise ValidationError("Email ya registrado!")
+        
+        
 
 class RegistrateSubUserForm(FlaskForm):
 
@@ -29,11 +39,18 @@ class RegistrateSubUserForm(FlaskForm):
     confirm_password = PasswordField("Confirmar contraseña: ", validators=[DataRequired(), 
                                     Length(2,32), EqualTo("password")])
 
-    tipo = SelectField("Tipo de usuario: ", choices=[("Primario", "Primario"), ("Secundario", "Secundario")])
+    #tipo = SelectField("Tipo de usuario: ", choices=[("Primario", "Primario"), ("Secundario", "Secundario")])
 
     id_casa = IntegerField("ID de la casa: ", validators=[DataRequired()])
     
     submit = SubmitField("Crear usuario")
+
+    def validate_email(self, email):
+
+        usuario = Usuario.query.filter_by(email=email.data).first()
+
+        if usuario:
+            raise ValidationError("Email ya registrado!")
 
 
 class LoginForm(FlaskForm):
@@ -43,6 +60,13 @@ class LoginForm(FlaskForm):
     password = PasswordField("Contraseña: ", validators=[DataRequired(), Length(2,32)])
 
     submit = SubmitField("Iniciar sesión")
+
+    def validate_primario(self, email):
+
+        usuario = Usuario.query.filter_by(email=email.data).first()
+
+        if usuario.tipo == "Secundario":
+            raise ValidationError("No tienes permiso para iniciar sesión")
     
 
 class RegistrateHouseForm(FlaskForm):

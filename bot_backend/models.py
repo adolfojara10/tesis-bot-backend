@@ -1,6 +1,13 @@
-from bot_backend import db
+from bot_backend import db, login_manager
+from flask_login import UserMixin
 
-class Usuario(db.Model):
+@login_manager.user_loader
+def load_user(usuario_id):
+
+    return Usuario.query.get(int(usuario_id))
+
+
+class Usuario(db.Model, UserMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(75), nullable=False)
@@ -11,7 +18,7 @@ class Usuario(db.Model):
 
     casa_id = db.Column(db.Integer, db.ForeignKey("casa.id"), nullable=True)
 
-    
+
 
 
     def __repr__(self) -> str:

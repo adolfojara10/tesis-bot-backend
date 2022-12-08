@@ -1,9 +1,12 @@
 from flask import render_template, flash, redirect, url_for
-from bot_backend import app, bot
+from bot_backend import app, bot, db
+from flask_bcrypt import Bcrypt
 from bot_backend.forms import RegistrateMainUserForm, LoginForm, RegistrateSubUserForm, RegistrateCameraForm, RegistrateHouseForm
 from bot_backend.models import Usuario, Casa, Camara
 from telebot.types import ForceReply
+from flask_login import login_user, current_user, logout_user
 
+bcrypt = Bcrypt(app)
 posts = [
     {
         'author': 'Corey Schafer',
@@ -73,42 +76,86 @@ def home():
     return render_template("home.html", posts=posts)
 
 
-@app.route("/registrarUsuario", methods=['POST', "GET"])
-def registrarUsuario():
+@app.route("/registrarUsuarioPrimario", methods=['POST', "GET"])
+def registrarUsuarioPrimario():
+
+    if current_user.is_authenticated:
+        return redirect(url_for("home"))
+
     form = RegistrateMainUserForm()
 
     if form.validate_on_submit():
+
+        hashed_pw = bcrypt.generate_password_hash(form.password.data).decode("utf-8")
+        usuario = Usuario(nombre = form.nombre.data, apellido=form.apellido.data, 
+                    email=form.email.data, password=hashed_pw, tipo="Primario")
+
+        db.session.add(usuario)
+        db.session.commit()
 
         flash(f"Cuenta creada con éxito", category="success")
 
         return redirect(url_for("login"))
 
-    return render_template("registrarUsuario.html", title="Registrar", form=form)
+    return render_template("registrarUsuarioPrimario.html", title="Registrar", form=form)
+
+
+@app.route("/registrarUsuarioSecundario", methods=['POST', "GET"])
+def registrarUsuarioSecundario():
+
+    form = RegistrateSubUserForm()
+
+    if form.validate_on_submit():
+
+        hashed_pw = bcrypt.generate_password_hash(form.password.data).decode("utf-8")
+        usuario = Usuario(nombre = form.nombre.data, apellido=form.apellido.data, 
+                    email=form.email.data, password=hashed_pw, tipo="Secundario")
+
+        db.session.add(usuario)
+        db.session.commit()
+
+        flash(f"Cuenta creada con éxito", category="success")
+
+        return redirect(url_for("login"))
+
+    return render_template("registrarUsuarioSecundario.html", title="Registrar-usuario", form=form)
+
+
 
 
 @app.route("/login", methods=['POST', "GET"])
 def login():
+
+    if current_user.is_authenticated:
+        return redirect(url_for("home"))
+
     form = LoginForm()
 
     if form.validate_on_submit():
-        if form.email.data == "gavilanesadolfo@gmail.com" and form.password.data == "1234":
-            flash("Sesión iniciada con éxito", category="success")
-
+        
+        usuario = Usuario.query.filter_by(email=form.email.data).first()
+        if usuario and bcrypt.check_password_hash(usuario.password, form.password.data):
+            
+            login_user(usuario, remember=True)
             return redirect(url_for("home"))
         else:
             flash("Credenciales erroneos. Revise sus datos", category="warning")
 
-
-
-
     return render_template("login.html", title="Login", form=form)
+
+
+@app.route("/logout")
+def logout():
+    logout_user()
+    return redirect(url_for("home"))
+
 
 @app.route("/registrarCamara")
 def registrarCamara():
 
     form = RegistrateHouseForm()
 
-    return render_template("registrarCasa.html", title="Casa", form=form)
+    return render_template("registrarCamara.html", title="Casa", form=form)
 
 
 @app.route("/registrarCasa")
@@ -118,6 +165,10 @@ def registrarCasa():
 
     return render_template("registrarCasa.html", title="Casa", form=form)
 
+
+@app.route("/cuenta")
+def cuenta():
+    return render_template("cuenta.html", title="Cuenta")
 
 
 @app.route("/about")

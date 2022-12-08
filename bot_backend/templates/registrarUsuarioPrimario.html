@@ -96,21 +96,7 @@
 
             </div>
 
-            <div class="form-group">
-                {{ form.tipo.label(class="form-control-label") }}
-                {% if form.tipo.errors %}
-                {{ form.tipo(class="form-control form-control-lg is-invalid") }}
-                <div class="invalid-feedback">
-                    {% for error in form.tipo.errors %}
-                    <span>{{ error }}</span>
-                    {% endfor %}
-                </div>
-                {% else %}
-                {{ form.tipo(class="form-control form-control-lg") }}
-                {% endif %}
-            </div>
-
-
+            
 
         </fieldset>
 
