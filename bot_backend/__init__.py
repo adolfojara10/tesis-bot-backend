@@ -18,5 +18,6 @@ db = SQLAlchemy(app)
 login_manager = LoginManager(app)
 
 bot = telebot.TeleBot(TELEGRAM_TOKEN)
+global usuario_autenticado
 
 from bot_backend import routes

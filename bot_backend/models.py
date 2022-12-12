@@ -48,4 +48,4 @@ class Camara(db.Model):
 
 
     def __repr__(self) -> str:
-        return  f"Casa('{self.id}', '{self.ubicacion}')"
+        return  f"Camara('{self.id}', '{self.ubicacion}')"

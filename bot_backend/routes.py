@@ -7,6 +7,7 @@ from telebot.types import ForceReply
 from flask_login import login_user, current_user, logout_user
 
 bcrypt = Bcrypt(app)
+
 posts = [
     {
         'author': 'Corey Schafer',
@@ -135,6 +136,9 @@ def login():
         
         usuario = Usuario.query.filter_by(email=form.email.data).first()
         if usuario and bcrypt.check_password_hash(usuario.password, form.password.data) and usuario.tipo == "Primario":
+
+            """global usuario_autenticado
+            usuario_autenticado = usuario"""
             
             login_user(usuario, remember=True)
             return redirect(url_for("home"))
@@ -173,9 +177,31 @@ def registrarCasa():
         db.session.commit()
 
         c = db.session.query(Casa).order_by(Casa.id.desc()).first()
+        
+        #actualizo al usuario con su casa
+        usu = current_user
+        usu.casa_id=c.id
+        print(current_user)
+        #db.session.commit()
+
+
+        ubicacion_cams = ["jardin", "garage","sala_comunal","comedor_comunal",
+                    "cocina","tv","dormitorio","calle","entrada"]
+        for i in range(9):
+            if form2[ubicacion_cams[i]].data == 1:
+                cam = Camara(ubicacion=ubicacion_cams[i], casa_id=c.id)
+                db.session.add(cam)
+                db.session.commit()
+            elif form2[ubicacion_cams[i]].data > 1:
+                for j in range(form2[ubicacion_cams[i]].data):
+                    cam = Camara(ubicacion=ubicacion_cams[i], casa_id=c.id)
+                    db.session.add(cam)
+                    db.session.commit()
+
+        
         flash("Casa y cámaras creadas con exito", category="success")
 
-        print(form[1])
+        
 
         return redirect(url_for("home"))
             
