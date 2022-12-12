@@ -37,8 +37,10 @@
           <!-- Navbar Right Side -->
           <div class="navbar-nav">
             {% if current_user.is_authenticated %}
-            <a class="nav-item nav-link" href="{{ url_for('logout') }}">Cerrar sesión</a>
+            <a class="nav-item nav-link" href="{{ url_for('registrarCasa') }}">Casa</a>
+            <a class="nav-item nav-link" href="{{ url_for('registrarCamara') }}">Camara</a>
             <a class="nav-item nav-link" href="{{ url_for('registrarUsuarioSecundario') }}">Registrar</a>
+            <a class="nav-item nav-link" href="{{ url_for('logout') }}">Cerrar sesión</a>
             {% else %}
             <a class="nav-item nav-link" href="{{ url_for('login') }}">Iniciar sesión</a>
             <a class="nav-item nav-link" href="{{ url_for('registrarUsuarioPrimario') }}">Registrar</a>

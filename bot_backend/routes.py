@@ -134,12 +134,12 @@ def login():
     if form.validate_on_submit():
         
         usuario = Usuario.query.filter_by(email=form.email.data).first()
-        if usuario and bcrypt.check_password_hash(usuario.password, form.password.data):
+        if usuario and bcrypt.check_password_hash(usuario.password, form.password.data) and usuario.tipo == "Primario":
             
             login_user(usuario, remember=True)
             return redirect(url_for("home"))
         else:
-            flash("Credenciales erroneos. Revise sus datos", category="warning")
+            flash("Credenciales erroneos o no tiene permiso. Revise sus datos", category="warning")
 
     return render_template("login.html", title="Login", form=form)
 
@@ -153,15 +153,32 @@ def logout():
 @app.route("/registrarCamara")
 def registrarCamara():
 
-    form = RegistrateHouseForm()
+    form = RegistrateCameraForm()
 
     return render_template("registrarCamara.html", title="Casa", form=form)
 
 
-@app.route("/registrarCasa")
+@app.route("/registrarCasa", methods=['POST', "GET"])
 def registrarCasa():
 
-    form = RegistrateHouseForm()
+    form1 = RegistrateHouseForm()
+    form2 = RegistrateCameraForm()
+    form = [form1, form2]
+
+    if form[0].validate_on_submit():
+        
+        casa = Casa(direccion=form[0].direccion.data, numero_direccion=form[0].numero_direccion.data)
+
+        db.session.add(casa)
+        db.session.commit()
+
+        c = db.session.query(Casa).order_by(Casa.id.desc()).first()
+        flash("Casa y cámaras creadas con exito", category="success")
+
+        print(form[1])
+
+        return redirect(url_for("home"))
+            
 
     return render_template("registrarCasa.html", title="Casa", form=form)
 

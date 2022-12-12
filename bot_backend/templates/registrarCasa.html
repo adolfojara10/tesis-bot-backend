@@ -1,0 +1,233 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="content-section">
+    <form method="POST" action="">
+        {{ form[0].hidden_tag() }}
+
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">
+                Crear casa
+            </legend>
+
+            <div class="form-group">
+                {{ form[0].direccion.label(class="form-control-label") }}
+
+                {% if form[0].direccion.errors %}
+                {{ form[0].direccion(class="form-control form-control-lg is-invalid") }}
+                <div class="invalid-feedback">
+                    {% for error in form[0].direccion.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                {{ form[0].direccion(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                {{ form[0].numero_direccion.label(class="form-control-label") }}
+
+                {% if form[0].numero_direccion.errors %}
+                {{ form[0].numero_direccion(class="form-control form-control-lg is-invalid") }}
+                <div class="invalid-feedback">
+                    {% for error in form[0].numero_direccion.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                {{ form[0].numero_direccion(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+
+
+
+            
+        </fieldset>
+
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">
+                Crear cámara
+            </legend>
+
+            <div class="form-group">
+                {{ form[1].jardin.label(class="form-control-label") }}
+
+                {% if form[1].jardin.errors %}
+                {{ form[1].jardin(class="form-control form-control-lg is-invalid") }}
+                <div class="invalid-feedback">
+                    {% for error in form[1].jardin.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                {{ form[1].jardin(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                {{ form[1].garage.label(class="form-control-label") }}
+
+                {% if form[1].garage.errors %}
+                {{ form[1].garage(class="form-control form-control-lg is-invalid") }}
+                <div class="invalid-feedback">
+                    {% for error in form[1].garage.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                {{ form[1].garage(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                {{ form[1].sala_comunal.label(class="form-control-label") }}
+
+                {% if form[1].sala_comunal.errors %}
+                {{ form[1].sala_comunal(class="form-control form-control-lg is-invalid") }}
+
+                <div class="invalid-feedback">
+                    {% for error in form[1].sala_comunal.errors %}
+                    <span>{{ error }} </span>
+                    {% endfor %}
+                </div>
+
+                {% else %}
+                <!-- in case there are no errors -->
+                {{ form[1].sala_comunal(class="form-control form-control-lg") }}
+                {% endif %}
+
+            </div>
+
+            <div class="form-group">
+                {{ form[1].comedor_comunal.label(class="form-control-label") }}
+
+                {% if form[1].comedor_comunal.errors %}
+                {{ form[1].comedor_comunal(class="form-control form-control-lg is-invalid") }}
+
+                <div class="invalid-feedback">
+                    {% for error in form[1].comedor_comunal.errors %}
+                    <span>{{ error }} </span>
+                    {% endfor %}
+                </div>
+
+                {% else %}
+                <!-- in case there are no errors -->
+                {{ form[1].comedor_comunal(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                {{ form[1].cocina.label(class="form-control-label") }}
+
+                {% if form[1].cocina.errors %}
+                {{ form[1].cocina(class="form-control form-control-lg is-invalid") }}
+
+                <div class="invalid-feedback">
+                    {% for error in form[1].cocina.errors %}
+                    <span>{{ error }} </span>
+                    {% endfor %}
+                </div>
+
+                {% else %}
+                <!-- in case there are no errors -->
+                {{ form[1].cocina(class="form-control form-control-lg") }}
+                {% endif %}
+
+            </div>
+
+            <div class="form-group">
+                {{ form[1].tv.label(class="form-control-label") }}
+
+                {% if form[1].tv.errors %}
+                {{ form[1].tv(class="form-control form-control-lg is-invalid") }}
+
+                <div class="invalid-feedback">
+                    {% for error in form[1].tv.errors %}
+                    <span>{{ error }} </span>
+                    {% endfor %}
+                </div>
+
+                {% else %}
+                <!-- in case there are no errors -->
+                {{ form[1].tv(class="form-control form-control-lg") }}
+                {% endif %}
+
+            </div>
+
+            <div class="form-group">
+                {{ form[1].dormitorio.label(class="form-control-label") }}
+
+                {% if form[1].dormitorio.errors %}
+                {{ form[1].dormitorio(class="form-control form-control-lg is-invalid") }}
+
+                <div class="invalid-feedback">
+                    {% for error in form[1].dormitorio.errors %}
+                    <span>{{ error }} </span>
+                    {% endfor %}
+                </div>
+
+                {% else %}
+                <!-- in case there are no errors -->
+                {{ form[1].dormitorio(class="form-control form-control-lg") }}
+                {% endif %}
+
+            </div>
+
+            <div class="form-group">
+                {{ form[1].calle.label(class="form-control-label") }}
+
+                {% if form[1].calle.errors %}
+                {{ form[1].calle(class="form-control form-control-lg is-invalid") }}
+
+                <div class="invalid-feedback">
+                    {% for error in form[1].calle.errors %}
+                    <span>{{ error }} </span>
+                    {% endfor %}
+                </div>
+
+                {% else %}
+                <!-- in case there are no errors -->
+                {{ form[1].calle(class="form-control form-control-lg") }}
+                {% endif %}
+
+            </div>
+
+            <div class="form-group">
+                {{ form[1].entrada.label(class="form-control-label") }}
+
+                {% if form[1].entrada.errors %}
+                {{ form[1].entrada(class="form-control form-control-lg is-invalid") }}
+
+                <div class="invalid-feedback">
+                    {% for error in form[1].entrada.errors %}
+                    <span>{{ error }} </span>
+                    {% endfor %}
+                </div>
+
+                {% else %}
+                <!-- in case there are no errors -->
+                {{ form[1].entrada(class="form-control form-control-lg") }}
+                {% endif %}
+
+            </div>
+
+            
+
+        </fieldset>
+
+        
+
+        <div class="form-group">
+            {{ form[0].submit(class="btn btn-outline-info") }}
+        </div>
+
+
+
+    </form>
+
+
+</div>
+
+
+{% endblock content %}
