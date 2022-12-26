@@ -1,7 +1,49 @@
 {% extends "layout.html" %}
 
 {% block content %}
-    <h1>cuenta
-    </h1>
-    
+<div class="content-section">
+    <div class="media">
+        <div class="media-body">
+            <h2 class="account-heading">{{ current_user.nombre }} {{ current_user.apellido }}</h2>
+            <p class="text-secondary">{{ current_user.email }}</p>
+
+            <p class="text-secondary">Dirección: {{ casa_cu.direccion }}</p>
+            
+        </div>
+    </div>
+    <!-- FORM HERE -->
+</div>
+{% if usuarios != [] %}
+<div class="content-section">
+    <div class="media">
+        <div class="media-body">
+            <h2 class="account-heading">Usuarios:</h2>
+
+            {% for k,v in camaras.items() %}
+                <p class="text-secondary">{{k}}: {{v}} </p>
+            
+            {% endfor %}
+            
+        </div>
+    </div>
+    <!-- FORM HERE -->
+</div>
+{% endif %}
+
+<div class="content-section">
+    <div class="media">
+        <div class="media-body">
+            <h2 class="account-heading">Cámaras:</h2>
+
+            {% for k,v in camaras.items() %}
+                <p class="text-secondary">{{k}}: {{v}} </p>
+            
+            {% endfor %}
+            
+        </div>
+    </div>
+    <a class="btn btn-primary" role="button" href="{{ url_for('actualizarCamaras') }}">Actualizar</a>
+</div>
+
+
 {% endblock content %}

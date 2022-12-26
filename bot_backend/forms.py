@@ -78,16 +78,25 @@ class RegistrateHouseForm(FlaskForm):
 
 class RegistrateCameraForm(FlaskForm):
 
-    jardin = IntegerField("Número de cámaras en el jardín: ", validators=[DataRequired()])
-    garage = IntegerField("Número de cámaras en el garage: ", validators=[DataRequired()])
-    sala_comunal = IntegerField("Número de cámaras en la sala comunal: ", validators=[DataRequired()])
-    comedor_comunal = IntegerField("Número de cámaras en el comedor: ", validators=[DataRequired()])
-    cocina = IntegerField("Número de cámaras en la cocina: ", validators=[DataRequired()])
-    tv = IntegerField("Número de cámaras en el sala de tv: ", validators=[DataRequired()])
-    dormitorio = IntegerField("Número de cámaras en los dormitorios: ", validators=[DataRequired()])
-    calle = IntegerField("Número de cámaras hacia la calle: ", validators=[DataRequired()])
-    entrada = IntegerField("Número de cámaras en la entrda: ", validators=[DataRequired()])
+    '''jardin = IntegerField("Número de cámaras en el jardín: ", validators=[DataRequired()], default=0)
+    garage = IntegerField("Número de cámaras en el garage: ", validators=[DataRequired()], default=0)
+    sala_comunal = IntegerField("Número de cámaras en la sala comunal: ", validators=[DataRequired()], default=0)
+    comedor_comunal = IntegerField("Número de cámaras en el comedor: ", validators=[DataRequired()], default=0)
+    cocina = IntegerField("Número de cámaras en la cocina: ", validators=[DataRequired()], default=0)
+    tv = IntegerField("Número de cámaras en el sala de tv: ", validators=[DataRequired()], default=0)
+    dormitorio = IntegerField("Número de cámaras en los dormitorios: ", validators=[DataRequired()], default=0)
+    calle = IntegerField("Número de cámaras hacia la calle: ", validators=[DataRequired()], default=0)
+    entrada = IntegerField("Número de cámaras en la entrda: ", validators=[DataRequired()], default=0)'''
         
+    jardin = IntegerField("Número de cámaras en el jardín: ", default=0)
+    garage = IntegerField("Número de cámaras en el garage: ", default=0)
+    sala_comunal = IntegerField("Número de cámaras en la sala comunal: ", default=0)
+    comedor_comunal = IntegerField("Número de cámaras en el comedor: ", default=0)
+    cocina = IntegerField("Número de cámaras en la cocina: ", default=0)
+    tv = IntegerField("Número de cámaras en el sala de tv: ", default=0)
+    dormitorio = IntegerField("Número de cámaras en los dormitorios: ", default=0)
+    calle = IntegerField("Número de cámaras hacia la calle: ", default=0)
+    entrada = IntegerField("Número de cámaras en la entrda: ", default=0)
     submit = SubmitField("Enviar")
 
     

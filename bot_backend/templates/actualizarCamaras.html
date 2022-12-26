@@ -1,0 +1,194 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="content-section">
+    <form method="POST" action="">
+        {{ form.hidden_tag() }}
+
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">
+                Actualizar Cámaras
+            </legend>
+
+            <div class="form-group">
+                
+                {{ form.jardin.label(class="form-control-label") }}
+                
+                
+
+                {% if form.jardin.errors %}
+                {{ form.jardin(class="form-control form-control-lg is-invalid") }}
+                <div class="invalid-feedback">
+                    {% for error in form.jardin.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                {{ form.jardin(class="form-control form-control-lg" , value=camaras["jardin"]) }}
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                {{ form.garage.label(class="form-control-label") }}
+
+                {% if form.garage.errors %}
+                {{ form.garage(class="form-control form-control-lg is-invalid") }}
+                <div class="invalid-feedback">
+                    {% for error in form.garage.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                {{ form.garage(class="form-control form-control-lg", value=camaras["garage"]) }}
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                {{ form.sala_comunal.label(class="form-control-label") }}
+
+                {% if form.sala_comunal.errors %}
+                {{ form.sala_comunal(class="form-control form-control-lg is-invalid") }}
+
+                <div class="invalid-feedback">
+                    {% for error in form.sala_comunal.errors %}
+                    <span>{{ error }} </span>
+                    {% endfor %}
+                </div>
+
+                {% else %}
+                <!-- in case there are no errors -->
+                {{ form.sala_comunal(class="form-control form-control-lg", value=camaras["sala_comunal"]) }}
+                {% endif %}
+
+            </div>
+
+            <div class="form-group">
+                {{ form.comedor_comunal.label(class="form-control-label") }}
+
+                {% if form.comedor_comunal.errors %}
+                {{ form.comedor_comunal(class="form-control form-control-lg is-invalid") }}
+
+                <div class="invalid-feedback">
+                    {% for error in form.comedor_comunal.errors %}
+                    <span>{{ error }} </span>
+                    {% endfor %}
+                </div>
+
+                {% else %}
+                <!-- in case there are no errors -->
+                {{ form.comedor_comunal(class="form-control form-control-lg", value=camaras["comedor_comunal"]) }}
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                {{ form.cocina.label(class="form-control-label") }}
+
+                {% if form.cocina.errors %}
+                {{ form.cocina(class="form-control form-control-lg is-invalid") }}
+
+                <div class="invalid-feedback">
+                    {% for error in form.cocina.errors %}
+                    <span>{{ error }} </span>
+                    {% endfor %}
+                </div>
+
+                {% else %}
+                <!-- in case there are no errors -->
+                {{ form.cocina(class="form-control form-control-lg", value=camaras["cocina"]) }}
+                {% endif %}
+
+            </div>
+
+            <div class="form-group">
+                {{ form.tv.label(class="form-control-label") }}
+
+                {% if form.tv.errors %}
+                {{ form.tv(class="form-control form-control-lg is-invalid") }}
+
+                <div class="invalid-feedback">
+                    {% for error in form.tv.errors %}
+                    <span>{{ error }} </span>
+                    {% endfor %}
+                </div>
+
+                {% else %}
+                <!-- in case there are no errors -->
+                {{ form.tv(class="form-control form-control-lg", value=camaras["tv"]) }}
+                {% endif %}
+
+            </div>
+
+            <div class="form-group">
+                {{ form.dormitorio.label(class="form-control-label") }}
+
+                {% if form.dormitorio.errors %}
+                {{ form.dormitorio(class="form-control form-control-lg is-invalid") }}
+
+                <div class="invalid-feedback">
+                    {% for error in form.dormitorio.errors %}
+                    <span>{{ error }} </span>
+                    {% endfor %}
+                </div>
+
+                {% else %}
+                <!-- in case there are no errors -->
+                {{ form.dormitorio(class="form-control form-control-lg", value=camaras["dormitorio"]) }}
+                {% endif %}
+
+            </div>
+
+            <div class="form-group">
+                {{ form.calle.label(class="form-control-label") }}
+
+                {% if form.calle.errors %}
+                {{ form.calle(class="form-control form-control-lg is-invalid") }}
+
+                <div class="invalid-feedback">
+                    {% for error in form.calle.errors %}
+                    <span>{{ error }} </span>
+                    {% endfor %}
+                </div>
+
+                {% else %}
+                <!-- in case there are no errors -->
+                {{ form.calle(class="form-control form-control-lg", value=camaras["calle"]) }}
+                {% endif %}
+
+            </div>
+
+            <div class="form-group">
+                {{ form.entrada.label(class="form-control-label") }}
+
+                {% if form.entrada.errors %}
+                {{ form.entrada(class="form-control form-control-lg is-invalid") }}
+
+                <div class="invalid-feedback">
+                    {% for error in form.entrada.errors %}
+                    <span>{{ error }} </span>
+                    {% endfor %}
+                </div>
+
+                {% else %}
+                <!-- in case there are no errors -->
+                {{ form.entrada(class="form-control form-control-lg", value=camaras["entrada"]) }}
+                {% endif %}
+
+            </div>
+
+            
+
+        </fieldset>
+
+        <div class="form-group">
+            {{ form.submit(class="btn btn-outline-info") }}
+        </div>
+
+
+
+    </form>
+
+
+</div>
+
+
+{% endblock content %}

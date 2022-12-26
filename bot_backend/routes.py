@@ -1,10 +1,10 @@
-from flask import render_template, flash, redirect, url_for
+from flask import render_template, flash, redirect, url_for, request
 from bot_backend import app, bot, db
 from flask_bcrypt import Bcrypt
 from bot_backend.forms import RegistrateMainUserForm, LoginForm, RegistrateSubUserForm, RegistrateCameraForm, RegistrateHouseForm
 from bot_backend.models import Usuario, Casa, Camara
 from telebot.types import ForceReply
-from flask_login import login_user, current_user, logout_user
+from flask_login import login_user, current_user, logout_user, login_required
 
 bcrypt = Bcrypt(app)
 
@@ -141,7 +141,10 @@ def login():
             usuario_autenticado = usuario"""
             
             login_user(usuario, remember=True)
-            return redirect(url_for("home"))
+
+            next_page = request.args.get("next")
+
+            return redirect(next_page) if next_page else redirect(url_for("home"))
         else:
             flash("Credenciales erroneos o no tiene permiso. Revise sus datos", category="warning")
 
@@ -210,8 +213,109 @@ def registrarCasa():
 
 
 @app.route("/cuenta")
+@login_required
 def cuenta():
-    return render_template("cuenta.html", title="Cuenta")
+
+    #print(current_user.casa_id)
+
+    casa_cu = Casa.query.filter_by(id=current_user.casa_id).first()
+
+
+
+    camaras = {}
+    for cam in range(len(casa_cu.camaras)):
+        if cam == 0:
+            camaras[casa_cu.camaras[cam].ubicacion] = 1
+        else:
+            if camaras.get(casa_cu.camaras[cam].ubicacion) != None:
+                camaras[casa_cu.camaras[cam].ubicacion] = camaras[casa_cu.camaras[cam].ubicacion]+1
+            else:
+                camaras[casa_cu.camaras[cam].ubicacion] = 1
+
+    usuarios = []
+
+    for us in casa_cu.usuarios:
+        if us.id != current_user.id:
+            usuarios.append(us)
+
+    
+
+
+    return render_template("cuenta.html", title="Cuenta", casa_cu=casa_cu, camaras=camaras, usuarios=usuarios)
+
+
+'''
+actualizar
+'''
+
+@app.route("/actualizarCamaras", methods=['POST', "GET"])
+def actualizarCamaras():
+
+    form = RegistrateCameraForm()
+
+    casa_cu = Casa.query.filter_by(id=current_user.casa_id).first()
+
+    camaras = {"jardin":0, "garage":0, "sala_comunal":0, "comedor_comunal":0, "cocina":0, "tv":0,
+                "dormitorio":0, "calle":0, "entrada":0}
+    for cam in range(len(casa_cu.camaras)):
+        if cam == 0:
+            camaras[casa_cu.camaras[cam].ubicacion] = 1
+        else:
+            if camaras.get(casa_cu.camaras[cam].ubicacion) != 0:
+                camaras[casa_cu.camaras[cam].ubicacion] = camaras[casa_cu.camaras[cam].ubicacion]+1
+            else:
+                camaras[casa_cu.camaras[cam].ubicacion] = 1
+
+    #print(camaras)
+
+    if form.validate_on_submit():
+
+        c = casa_cu
+        
+        ubicacion_cams = ["jardin", "garage","sala_comunal","comedor_comunal",
+                    "cocina","tv","dormitorio","calle","entrada"]
+        for i in range(9):
+            if form[ubicacion_cams[i]].data != 0:
+                
+                num_insertado = form[ubicacion_cams[i]].data
+                ccc = Camara.query.filter_by(ubicacion=ubicacion_cams[i])
+                num_existentes = Camara.query.filter_by(ubicacion=ubicacion_cams[i]).count()
+
+                if num_insertado - num_existentes == 0:
+                    pass
+                elif num_insertado - num_existentes > 0:
+                    for j in range(num_insertado - num_existentes):
+                        cam = Camara(ubicacion=ubicacion_cams[i], casa_id=c.id)
+                        db.session.add(cam)
+                        db.session.commit()
+                elif num_insertado - num_existentes < 0:
+                    for j in range((num_insertado - num_existentes)*-1):
+                        db.session.delete(Camara.query.filter_by(ubicacion=ubicacion_cams[i])[-1])
+                        db.session.commit()           
+
+
+            elif form[ubicacion_cams[i]].data == 0:
+                try:
+                    Camara.query.filter_by(ubicacion=ubicacion_cams[i]).delete()
+                    db.session.commit()
+                except:
+                    pass
+                
+            '''elif form[ubicacion_cams[i]].data > 1:
+                for j in range(form[ubicacion_cams[i]].data):
+                    cam = Camara(ubicacion=ubicacion_cams[i], casa_id=c.id)
+                    db.session.add(cam)
+                    db.session.commit()'''
+
+        
+        print(c.camaras)
+        flash("Cámaras actualizadas con éxito", category="success")
+
+        
+
+        return redirect(url_for("cuenta"))
+    
+    return render_template("actualizarCamaras.html", title="Actualizar Cámaras", form=form, camaras=camaras)
 
 
 @app.route("/about")

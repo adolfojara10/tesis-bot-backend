@@ -16,6 +16,8 @@ db = SQLAlchemy(app)
 
 #bcypt = Bcrypt(app)
 login_manager = LoginManager(app)
+login_manager.login_view = "login"
+login_manager.login_message_category = "info"
 
 bot = telebot.TeleBot(TELEGRAM_TOKEN)
 global usuario_autenticado
