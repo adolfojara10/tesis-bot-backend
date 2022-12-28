@@ -1,13 +1,14 @@
 {% extends "layout.html" %}
 
 {% block content %}
+
 <div class="content-section">
     <form method="POST" action="">
         {{ form.hidden_tag() }}
 
         <fieldset class="form-group">
             <legend class="border-bottom mb-4">
-                Crear usuario
+                Actualizar usuario: {{ usuarioSeleccionado.nombre }}
             </legend>
 
             <div class="form-group">
@@ -94,8 +95,7 @@
                 {{ form.confirm_password(class="form-control form-control-lg") }}
                 {% endif %}
 
-            </div>
-           
+            </div>            
 
         </fieldset>
 
@@ -109,6 +109,5 @@
 
 
 </div>
-
 
 {% endblock content %}

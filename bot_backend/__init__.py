@@ -20,6 +20,7 @@ login_manager.login_view = "login"
 login_manager.login_message_category = "info"
 
 bot = telebot.TeleBot(TELEGRAM_TOKEN)
-global usuario_autenticado
+global usuario_autenticado, usuarioSeleccionado
+usuarioSeleccionado = None
 
 from bot_backend import routes

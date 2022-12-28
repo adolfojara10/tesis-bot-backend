@@ -7,39 +7,183 @@
             <h2 class="account-heading">{{ current_user.nombre }} {{ current_user.apellido }}</h2>
             <p class="text-secondary">{{ current_user.email }}</p>
 
+            <p class="text-secondary">ID casa: {{ casa_cu.id }}</p>
             <p class="text-secondary">Dirección: {{ casa_cu.direccion }}</p>
-            
+
         </div>
     </div>
     <!-- FORM HERE -->
 </div>
+
+{% if usuarios != [] %}
+<div class="content-section">
+    <h2 class="account-heading">Usuarios</h2>
+    <form method="POST" action="">
+        {{ form.hidden_tag() }}
+
+        <fieldset class="form-group">
+            <div class="form-group">
+                {{ form.id.label(class="form-control-label") }}
+
+                {% if form.id.errors %}
+                {{ form.id(class="form-control form-control-lg is-invalid") }}
+                <div class="invalid-feedback">
+                    {% for error in form.id.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                {{ form.id(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+        </fieldset>
+        
+        <table id="table" class="table table-hover" data-toggle="table" data-pagination="true" data-search="true">
+            <thead>
+                <tr>
+
+                    <th scope="col">ID</th>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Apellido</th>
+                    <th scope="col">Email</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                {% for estu in usuarios %}
+
+                <tr>
+
+                    <th scope="row">{{ estu.id }}</th>
+                    <td>{{ estu.nombre }}</td>
+                    <td>{{ estu.apellido }}</td>
+                    <td>{{ estu.email }}</td>
+                    <td>{{ estu.celular }}</td>
+
+                </tr>
+
+                {% endfor %}
+            </tbody>
+        </table>
+        <br>
+
+        <div class="form-group">
+            {{ form.submit(class="btn btn-outline-info") }}
+        </div>
+
+    </form>
+
+</div>
+{% endif %}
+<!--
+
+{% if usuarios != [] %}
+<div class="content-section">
+    <table id="table" class="table table-hover" data-toggle="table" data-pagination="true" data-search="true">
+        <thead>
+            <tr>
+
+                <th scope="col">ID</th>
+                <th scope="col">Nombre</th>
+                <th scope="col">Apellido</th>
+                <th scope="col">Email</th>
+                
+            </tr>
+        </thead>
+        <tbody>
+            {% for estu in usuarios %}
+
+            <tr>
+
+                <th scope="row">{{ estu.id }}</th>
+                <td>{{ estu.nombre }}</td>
+                <td>{{ estu.apellido }}</td>
+                <td>{{ estu.email }}</td>
+                <td>{{ estu.celular }}</td>
+
+            </tr>
+
+            {% endfor %}
+        </tbody>
+    </table>
+    <br>
+
+    <a class="btn btn-primary" role="button" onclick="fnselect()"
+        href="{{ url_for('guardarUsuarioSeleccionado') }}">Continuar</a>
+    </br>
+    <script>
+        var table = document.getElementById('table');
+        var selected = table.getElementsByClassName('selected');
+        table.onclick = highlight;
+
+        function highlight(e) {
+            if (selected[0]) selected[0].className = '';
+            e.target.parentNode.className = 'selected';
+        }
+
+        function fnselect() {
+
+            var element = document.querySelectorAll('.selected');
+
+            if (element[0] !== undefined) { //it must be selected
+
+                alert("Ha escogido al estudiante: " + element[0].children[1].firstChild.data + " " + element[0].children[2].firstChild.data + element[0].children[0].firstChild.data + ". ¿Desea continuar?");
+                var id_est = (element[0].children[0].firstChild.data);
+                console.log(id_est)
+                var dict = {id : id_est};
+
+                $.ajax({
+                    type: "POST",
+                    url: "/guardarUsuarioSeleccionado",
+                    data: JSON.stringify(dict),
+                    contentType: "application/json"
+                    /*success: function(result) {
+                      console.log("Result:");
+                      console.log(result);
+                    } */
+                });
+
+
+            }
+
+        }
+
+    </script>
+</div>
+{% endif %}
+-->
+
+<!--
+
+
 {% if usuarios != [] %}
 <div class="content-section">
     <div class="media">
         <div class="media-body">
             <h2 class="account-heading">Usuarios:</h2>
 
-            {% for k,v in camaras.items() %}
-                <p class="text-secondary">{{k}}: {{v}} </p>
+            {% for u in usuarios %}
+                <p class="text-secondary">Nombre: {{ u.nombre }} {{ u.apellido }}</p>
             
             {% endfor %}
             
         </div>
     </div>
-    <!-- FORM HERE -->
+    <a class="btn btn-primary" role="button" href="{{ url_for('actualizarCamaras') }}">Actualizar</a>
+    
 </div>
 {% endif %}
-
+-->
 <div class="content-section">
     <div class="media">
         <div class="media-body">
             <h2 class="account-heading">Cámaras:</h2>
 
             {% for k,v in camaras.items() %}
-                <p class="text-secondary">{{k}}: {{v}} </p>
-            
+            <p class="text-secondary">{{k}}: {{v}} </p>
+
             {% endfor %}
-            
+
         </div>
     </div>
     <a class="btn btn-primary" role="button" href="{{ url_for('actualizarCamaras') }}">Actualizar</a>
