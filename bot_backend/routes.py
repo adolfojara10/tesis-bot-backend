@@ -252,7 +252,7 @@ def cuenta():
         if usuarioSeleccionado != None and usuarioSeleccionado.casa_id == current_user.casa_id and id!=current_user.id:
             return redirect(url_for('actualizarUsuarios'))  
         else:
-            flash("ID erroneo! Usuario no encontrado ó usuario equivocado", category="error")
+            flash("ID erroneo! Usuario no encontrado ó usuario equivocado", category="warning")
 
 
 
@@ -394,6 +394,70 @@ def actualizarCamaras():
         return redirect(url_for("cuenta"))
     
     return render_template("actualizarCamaras.html", title="Actualizar Cámaras", form=form, camaras=camaras)
+
+@app.route("/actualizarCasa", methods=['POST', "GET"])
+def actualizarCasa():
+
+    form = RegistrateHouseForm()
+    casa_cu = Casa.query.filter_by(id=current_user.casa_id).first()
+
+    if form.validate_on_submit():
+
+
+        #usuarioSeleccionado = Usuario.query.filter_by(id=usuarioSeleccionado.id)       
+        casa_cu.direccion = form.direccion.data 
+        casa_cu.numero_direccion = form.numero_direccion.data 
+                
+        #Usuario.update().where(id==usuarioSeleccionado.id).values(nombre=form.nombre.data, apellido=form.apellido.data, email=form.email.data, password=form.password.data)
+
+        db.session.query(Casa).filter(Casa.id==casa_cu.id).update({"direccion":form.direccion.data, "numero_direccion":form.numero_direccion.data})
+        
+        db.session.commit()
+        flash('Casa actualizada', category="success")
+        
+        return redirect(url_for('cuenta'))
+    
+    #to put the user data in the form when is logged in
+    elif request.method == 'GET':
+        
+        form.direccion.data = casa_cu.direccion
+        form.numero_direccion.data = casa_cu.numero_direccion
+        
+    
+    return render_template("actualizarCasa.html", title="Actualizar Casa", form=form)
+
+@app.route("/actualizarUsuarioPrincipal", methods=['POST', "GET"])
+def actualizarUsuarioPrincipal():
+
+    form = UpdateSubUserForm()
+
+    if form.validate_on_submit():
+
+
+        #usuarioSeleccionado = Usuario.query.filter_by(id=usuarioSeleccionado.id)       
+        current_user.nombre = form.nombre.data 
+        current_user.apellido = form.apellido.data 
+        current_user.email = form.email.data 
+        current_user.password = form.password.data 
+        
+        #Usuario.update().where(id==usuarioSeleccionado.id).values(nombre=form.nombre.data, apellido=form.apellido.data, email=form.email.data, password=form.password.data)
+
+        db.session.query(Usuario).filter(Usuario.id==current_user.id).update({"nombre":form.nombre.data, "apellido":form.apellido.data, "email":form.email.data, "password":form.password.data})
+        
+        db.session.commit()
+        flash('Usuario actualizado', category="success")
+        
+        return redirect(url_for('cuenta'))
+    
+    #to put the user data in the form when is logged in
+    elif request.method == 'GET':
+        
+        form.nombre.data = current_user.nombre
+        form.apellido.data = current_user.apellido
+        form.email.data = current_user.email
+        
+
+    return render_template("actualizarUsuarios.html", title="Actualizar Usuarios" , usuarioSeleccionado=current_user, form=form)
 
 
 @app.route("/about")

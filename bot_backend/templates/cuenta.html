@@ -12,7 +12,10 @@
 
         </div>
     </div>
-    <!-- FORM HERE -->
+    {% if current_user.casa_id != None %}
+        <a class="btn btn-primary" role="button" href="{{ url_for('actualizarCasa') }}">Actualizar Casa</a>
+    {% endif %}
+    <a class="btn btn-secondary" role="button" href="{{ url_for('actualizarUsuarioPrincipal') }}">Actualizar Perfil</a>
 </div>
 
 {% if usuarios != [] %}

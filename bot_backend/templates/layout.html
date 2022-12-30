@@ -37,8 +37,10 @@
           <!-- Navbar Right Side -->
           <div class="navbar-nav">
             {% if current_user.is_authenticated %}
+            {% if current_user.casa_id == None %}
             <a class="nav-item nav-link" href="{{ url_for('registrarCasa') }}">Casa</a>
-            <a class="nav-item nav-link" href="{{ url_for('registrarCamara') }}">Camara</a>
+            {% endif %}
+            <!--<a class="nav-item nav-link" href="{{ url_for('registrarCamara') }}">Camara</a>-->
             <a class="nav-item nav-link" href="{{ url_for('registrarUsuarioSecundario') }}">Registrar</a>
             <a class="nav-item nav-link" href="{{ url_for('cuenta') }}">Cuenta</a>
             <a class="nav-item nav-link" href="{{ url_for('logout') }}">Cerrar sesión</a>
