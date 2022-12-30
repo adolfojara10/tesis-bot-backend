@@ -11,6 +11,8 @@ class RegistrateMainUserForm(FlaskForm):
 
     email = StringField("Email: ", validators=[DataRequired(),Email()])
 
+    telefono = StringField("Número de teléfono: Ejemplo: 0963204011", validators=[DataRequired(),Length(10,10)])
+
     password = PasswordField("Contraseña: ", validators=[DataRequired(), Length(2,32)])
     confirm_password = PasswordField("Confirmar contraseña: ", validators=[DataRequired(), 
                                     Length(2,32), EqualTo("password")])
@@ -25,6 +27,13 @@ class RegistrateMainUserForm(FlaskForm):
 
         if usuario:
             raise ValidationError("Email ya registrado!")
+
+    def validate_telefono(self, telefono):
+
+        usuario = Usuario.query.filter_by(telefono=telefono.data).first()
+
+        if usuario:
+            raise ValidationError("Teléfono ya registrado!")
         
         
 
@@ -34,6 +43,7 @@ class RegistrateSubUserForm(FlaskForm):
     apellido = StringField("Apellidos: ", validators=[DataRequired(), Length(2,75)])
 
     email = StringField("Email: ", validators=[DataRequired(),Email()])
+    telefono = StringField("Número de teléfono: Ejemplo: 0963204011", validators=[DataRequired(),Length(10,10)])
 
     password = PasswordField("Contraseña: ", validators=[DataRequired(), Length(2,32)])
     confirm_password = PasswordField("Confirmar contraseña: ", validators=[DataRequired(), 
@@ -41,7 +51,7 @@ class RegistrateSubUserForm(FlaskForm):
 
     #tipo = SelectField("Tipo de usuario: ", choices=[("Primario", "Primario"), ("Secundario", "Secundario")])
 
-    id_casa = IntegerField("ID de la casa: ", validators=[DataRequired()])
+    #id_casa = IntegerField("ID de la casa: ", validators=[DataRequired()])
     
     submit = SubmitField("Crear usuario")
 
@@ -51,6 +61,14 @@ class RegistrateSubUserForm(FlaskForm):
 
         if usuario:
             raise ValidationError("Email ya registrado!")
+
+    def validate_telefono(self, telefono):
+
+        usuario = Usuario.query.filter_by(telefono=telefono.data).first()
+
+        if usuario:
+            raise ValidationError("Teléfono ya registrado!")
+        
 
 
 
@@ -65,6 +83,7 @@ class UpdateSubUserForm(FlaskForm):
     apellido = StringField("Apellidos: ", validators=[DataRequired(), Length(2,75)])
 
     email = StringField("Email: ", validators=[DataRequired(),Email()])
+    telefono = StringField("Número de teléfono: Ejemplo: 0963204011", validators=[DataRequired(),Length(10,10)])
 
     password = PasswordField("Contraseña: ", validators=[DataRequired(), Length(2,32)])
     confirm_password = PasswordField("Confirmar contraseña: ", validators=[DataRequired(), 
@@ -81,6 +100,14 @@ class UpdateSubUserForm(FlaskForm):
 
         if usuario > 1:
             raise ValidationError("Email ya registrado!")
+
+    def validate_telefono(self, telefono):
+
+        usuario = Usuario.query.filter_by(telefono=telefono.data).count()
+
+        if usuario > 1:
+            
+            raise ValidationError("Teléfono ya registrado!")
 
 
 
@@ -128,13 +155,6 @@ class RegistrateCameraForm(FlaskForm):
     tv = IntegerField("Número de cámaras en el sala de tv: ", validators=[NumberRange(min=0, max=5, message='Invalid length')],default=0)
     dormitorio = IntegerField("Número de cámaras en los dormitorios: ", validators=[NumberRange(min=0, max=5, message='Invalid length')],default=0)
     calle = IntegerField("Número de cámaras hacia la calle: ", validators=[NumberRange(min=0, max=5, message='Invalid length')],default=0)
-    entrada = IntegerField("Número de cámaras en la entrda: ", validators=[NumberRange(min=0, max=5, message='Invalid length')],default=0)
+    entrada = IntegerField("Número de cámaras en la entrada: ", validators=[NumberRange(min=0, max=5, message='Invalid length')],default=0)
     submit = SubmitField("Enviar")
-
-    
-
-    
-    
-
-
 

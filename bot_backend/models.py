@@ -13,8 +13,10 @@ class Usuario(db.Model, UserMixin):
     nombre = db.Column(db.String(75), nullable=False)
     apellido = db.Column(db.String(75), nullable=False)
     email = db.Column(db.String(120), nullable=False)
-    password = db.Column(db.String(60), nullable=False)
+    password = db.Column(db.String(100), nullable=False)
     tipo = db.Column(db.String(20), nullable=False)
+    telefono = db.Column(db.String(20), nullable=False)
+    telegram_chat_id = db.Column(db.String(20), nullable=True)
 
     casa_id = db.Column(db.Integer, db.ForeignKey("casa.id"), nullable=True)
 

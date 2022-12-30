@@ -93,8 +93,12 @@ def registrarUsuarioPrimario():
 
         hashed_pw = bcrypt.generate_password_hash(
             form.password.data).decode("utf-8")
-        usuario = Usuario(nombre=form.nombre.data, apellido=form.apellido.data,
-                    email=form.email.data, password=hashed_pw, tipo="Primario")
+
+        print(hashed_pw)
+        usuario = Usuario(nombre=form.nombre.data.title(), apellido=form.apellido.data.title(),
+                    email=form.email.data, telefono=form.telefono.data,
+                    password=bcrypt.generate_password_hash(
+                            form.password.data).decode("utf-8"), tipo="Primario")
 
         db.session.add(usuario)
         db.session.commit()
@@ -111,21 +115,29 @@ def registrarUsuarioSecundario():
 
     form = RegistrateSubUserForm()
 
+    print("hola")
+
+    print(form.is_submitted(), "----------", form.validate_on_submit())
+
     if form.validate_on_submit():
+
+        print("hola")
 
         hashed_pw = bcrypt.generate_password_hash(
             form.password.data).decode("utf-8")
-        usuario = Usuario(nombre=form.nombre.data, apellido=form.apellido.data,
-                    email=form.email.data, password=hashed_pw, tipo="Secundario", casa_id=current_user.casa_id)
+        
+        usuario = Usuario(nombre=form.nombre.data.title(), apellido=form.apellido.data.title(),
+                    email=form.email.data, telefono=form.telefono.data,
+                    password=hashed_pw, tipo="Secundario", casa_id=current_user.casa_id)
 
         db.session.add(usuario)
         db.session.commit()
 
         flash(f"Cuenta creada con éxito", category="success")
 
-        return redirect(url_for("login"))
+        return redirect(url_for("cuenta"))
 
-    return render_template("registrarUsuarioSecundario.html", title="Registrar-usuario", form=form)
+    return render_template("registrarUsuarioPrimario.html", title="Registrar-usuario", form=form)
 
 
 @app.route("/login", methods=['POST', "GET"])
@@ -139,7 +151,12 @@ def login():
     if form.validate_on_submit():
 
         usuario = Usuario.query.filter_by(email=form.email.data).first()
-        if usuario and bcrypt.check_password_hash(usuario.password, form.password.data) and usuario.tipo == "Primario":
+
+        print(usuario.password)
+        print(bcrypt.generate_password_hash(
+            form.password.data).decode("utf-8"))
+
+        if usuario and bcrypt.check_password_hash(usuario.password.encode("utf-8"), form.password.data) and usuario.tipo == "Primario":
 
             """global usuario_autenticado
             usuario_autenticado = usuario"""
@@ -179,7 +196,7 @@ def registrarCasa():
 
     if form[0].validate_on_submit():
 
-        casa = Casa(direccion=form[0].direccion.data,
+        casa = Casa(direccion=form[0].direccion.data.title(),
                     numero_direccion=form[0].numero_direccion.data)
 
         db.session.add(casa)
@@ -222,20 +239,22 @@ def cuenta():
     casa_cu = Casa.query.filter_by(id=current_user.casa_id).first()
 
     camaras = {}
-    for cam in range(len(casa_cu.camaras)):
-        if cam == 0:
-            camaras[casa_cu.camaras[cam].ubicacion] = 1
-        else:
-            if camaras.get(casa_cu.camaras[cam].ubicacion) != None:
-                camaras[casa_cu.camaras[cam].ubicacion] = camaras[casa_cu.camaras[cam].ubicacion]+1
-            else:
-                camaras[casa_cu.camaras[cam].ubicacion] = 1
-
     usuarios = []
+    if casa_cu != None:
+        for cam in range(len(casa_cu.camaras)):
+            if cam == 0:
+                camaras[casa_cu.camaras[cam].ubicacion] = 1
+            else:
+                if camaras.get(casa_cu.camaras[cam].ubicacion) != None:
+                    camaras[casa_cu.camaras[cam].ubicacion] = camaras[casa_cu.camaras[cam].ubicacion]+1
+                else:
+                    camaras[casa_cu.camaras[cam].ubicacion] = 1
 
-    for us in casa_cu.usuarios:
-        if us.id != current_user.id:
-            usuarios.append(us)
+        
+
+        for us in casa_cu.usuarios:
+            if us.id != current_user.id:
+                usuarios.append(us)
 
     form = EscogerUsuarioActualizar()
 
@@ -301,14 +320,17 @@ def actualizarUsuarios():
 
 
         #usuarioSeleccionado = Usuario.query.filter_by(id=usuarioSeleccionado.id)       
-        usuarioSeleccionado.nombre = form.nombre.data 
-        usuarioSeleccionado.apellido = form.apellido.data 
+        usuarioSeleccionado.nombre = form.nombre.data.title()
+        usuarioSeleccionado.apellido = form.apellido.data.title() 
         usuarioSeleccionado.email = form.email.data 
-        usuarioSeleccionado.password = form.password.data 
+        usuarioSeleccionado.password = bcrypt.generate_password_hash(
+            form.password.data).decode("utf-8")
+        usuarioSeleccionado.telefono = form.telefono.data
         
         #Usuario.update().where(id==usuarioSeleccionado.id).values(nombre=form.nombre.data, apellido=form.apellido.data, email=form.email.data, password=form.password.data)
 
-        db.session.query(Usuario).filter(Usuario.id==usuarioSeleccionado.id).update({"nombre":form.nombre.data, "apellido":form.apellido.data, "email":form.email.data, "password":form.password.data})
+        db.session.query(Usuario).filter(Usuario.id==usuarioSeleccionado.id).update({"nombre":form.nombre.data.title(), "apellido":form.apellido.data.title(), "email":form.email.data, "telefono": form.telefono.data, "password":bcrypt.generate_password_hash(
+            form.password.data).decode("utf-8")})
         
         db.session.commit()
         flash('Usuario actualizado', category="success")
@@ -321,6 +343,7 @@ def actualizarUsuarios():
         form.nombre.data = usuarioSeleccionado.nombre
         form.apellido.data = usuarioSeleccionado.apellido
         form.email.data = usuarioSeleccionado.email
+        form.telefono.data = usuarioSeleccionado.telefono
         
 
     return render_template("actualizarUsuarios.html", title="Actualizar Usuarios" , usuarioSeleccionado=usuarioSeleccionado, form=form)
@@ -405,12 +428,12 @@ def actualizarCasa():
 
 
         #usuarioSeleccionado = Usuario.query.filter_by(id=usuarioSeleccionado.id)       
-        casa_cu.direccion = form.direccion.data 
+        casa_cu.direccion = form.direccion.data.title()
         casa_cu.numero_direccion = form.numero_direccion.data 
                 
         #Usuario.update().where(id==usuarioSeleccionado.id).values(nombre=form.nombre.data, apellido=form.apellido.data, email=form.email.data, password=form.password.data)
 
-        db.session.query(Casa).filter(Casa.id==casa_cu.id).update({"direccion":form.direccion.data, "numero_direccion":form.numero_direccion.data})
+        db.session.query(Casa).filter(Casa.id==casa_cu.id).update({"direccion":form.direccion.data.title(), "numero_direccion":form.numero_direccion.data})
         
         db.session.commit()
         flash('Casa actualizada', category="success")
@@ -435,14 +458,17 @@ def actualizarUsuarioPrincipal():
 
 
         #usuarioSeleccionado = Usuario.query.filter_by(id=usuarioSeleccionado.id)       
-        current_user.nombre = form.nombre.data 
-        current_user.apellido = form.apellido.data 
+        current_user.nombre = form.nombre.data.title()
+        current_user.apellido = form.apellido.data.title() 
         current_user.email = form.email.data 
-        current_user.password = form.password.data 
+        current_user.password = bcrypt.generate_password_hash(
+            form.password.data).decode("utf-8")
+        current_user.telefono = form.telefono.data
         
         #Usuario.update().where(id==usuarioSeleccionado.id).values(nombre=form.nombre.data, apellido=form.apellido.data, email=form.email.data, password=form.password.data)
 
-        db.session.query(Usuario).filter(Usuario.id==current_user.id).update({"nombre":form.nombre.data, "apellido":form.apellido.data, "email":form.email.data, "password":form.password.data})
+        db.session.query(Usuario).filter(Usuario.id==current_user.id).update({"nombre":form.nombre.data.title(), "apellido":form.apellido.data.title(), "email":form.email.data, "telefono":form.telefono.data, "password":bcrypt.generate_password_hash(
+            form.password.data).decode("utf-8")})
         
         db.session.commit()
         flash('Usuario actualizado', category="success")
@@ -455,7 +481,7 @@ def actualizarUsuarioPrincipal():
         form.nombre.data = current_user.nombre
         form.apellido.data = current_user.apellido
         form.email.data = current_user.email
-        
+        form.telefono.data = current_user.telefono
 
     return render_template("actualizarUsuarios.html", title="Actualizar Usuarios" , usuarioSeleccionado=current_user, form=form)
 

@@ -60,6 +60,25 @@
             </div>
 
             <div class="form-group">
+                {{ form.telefono.label(class="form-control-label") }}
+
+                {% if form.telefono.errors %}
+                {{ form.telefono(class="form-control form-control-lg is-invalid") }}
+
+                <div class="invalid-feedback">
+                    {% for error in form.telefono.errors %}
+                    <span>{{ error }} </span>
+                    {% endfor %}
+                </div>
+
+                {% else %}
+                <!-- in case there are no errors -->
+                {{ form.telefono(class="form-control form-control-lg") }}
+                {% endif %}
+
+            </div>
+
+            <div class="form-group">
                 {{ form.password.label(class="form-control-label") }}
 
                 {% if form.password.errors %}

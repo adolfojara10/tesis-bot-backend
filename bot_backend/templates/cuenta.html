@@ -13,7 +13,7 @@
         </div>
     </div>
     {% if current_user.casa_id != None %}
-        <a class="btn btn-primary" role="button" href="{{ url_for('actualizarCasa') }}">Actualizar Casa</a>
+    <a class="btn btn-primary" role="button" href="{{ url_for('actualizarCasa') }}">Actualizar Casa</a>
     {% endif %}
     <a class="btn btn-secondary" role="button" href="{{ url_for('actualizarUsuarioPrincipal') }}">Actualizar Perfil</a>
 </div>
@@ -40,7 +40,7 @@
                 {% endif %}
             </div>
         </fieldset>
-        
+
         <table id="table" class="table table-hover" data-toggle="table" data-pagination="true" data-search="true">
             <thead>
                 <tr>
@@ -49,6 +49,7 @@
                     <th scope="col">Nombre</th>
                     <th scope="col">Apellido</th>
                     <th scope="col">Email</th>
+                    <th scope="col">Teléfono</th>
 
                 </tr>
             </thead>
@@ -61,7 +62,7 @@
                     <td>{{ estu.nombre }}</td>
                     <td>{{ estu.apellido }}</td>
                     <td>{{ estu.email }}</td>
-                    <td>{{ estu.celular }}</td>
+                    <td>{{ estu.telefono }}</td>
 
                 </tr>
 
@@ -177,20 +178,23 @@
 </div>
 {% endif %}
 -->
+{% if camaras|length != 0%}
 <div class="content-section">
     <div class="media">
         <div class="media-body">
             <h2 class="account-heading">Cámaras:</h2>
+
 
             {% for k,v in camaras.items() %}
             <p class="text-secondary">{{k}}: {{v}} </p>
 
             {% endfor %}
 
+
         </div>
     </div>
     <a class="btn btn-primary" role="button" href="{{ url_for('actualizarCamaras') }}">Actualizar</a>
 </div>
-
+{% endif %}
 
 {% endblock content %}
