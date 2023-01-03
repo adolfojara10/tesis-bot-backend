@@ -1,7 +1,7 @@
 from bot_backend import app, bot, telebot
 import threading
 
-'''def recibir_mensajes():
+def recibir_mensajes():
     bot.infinity_polling()
     
 
@@ -17,15 +17,15 @@ def start_app():
     hilo_bot.start()
 
     print("BOOOT INICIADO")
-    app.run()'''
+    app.run()
 
 
 if __name__ == "__main__":
     
 
-    #app_thread = threading.Thread(name="app_thread", target=start_app)
-    #app_thread.start()
-    app.run(debug=True)
+    app_thread = threading.Thread(name="app_thread", target=start_app)
+    app_thread.start()
+    #app.run(debug=True)
 
     print("app INICIADO")
 

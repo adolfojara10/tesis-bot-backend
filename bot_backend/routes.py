@@ -34,10 +34,15 @@ global cuenta
 @bot.message_handler(commands=["start"])
 def cmd_start(message):
 
-    texto = "Bienvido a HAL9000, el chatbot inteligente para tu hogar.\n"
-    texto += "/iniciar_sesion para iniciar sesion con tu cuenta. \n"
-    texto += "/foto para obtener una foto de alguna cámara. \n"
-    texto += "/video para obtener un video de alguna cámara. \n"
+    texto = ""
+
+    if verificar_si_inicio_sesion(message.chat.id):
+        texto += "/foto para obtener una foto de alguna cámara. \n"
+        texto += "/video para obtener un video de alguna cámara. \n"
+    else:
+        texto += "Bienvido a HAL9000, el chatbot inteligente para tu hogar.\n"
+        texto += "/iniciar_sesion para iniciar sesion con tu cuenta. \n"
+        
 
     bot.send_message(message.chat.id, texto)
 
@@ -72,7 +77,54 @@ def preguntar_password(message):
 
 def verificar_cuenta(message):
     cuenta.append(message.text)
-    print(cuenta)
+    app.app_context().push()
+
+    usuario = Usuario.query.filter_by(email=cuenta[0]).first()
+    texto = ""
+
+    if not usuario.telegram_chat_id:
+        
+        if (usuario and bcrypt.check_password_hash(usuario.password.encode("utf-8"), cuenta[1])):
+            texto += "Inicio de sesión exitoso! \n"
+            texto += "/foto para recibir una foto de un lugar de tu casa \n"
+            texto += "/video para recibir un video de un lugar de tu casa \n"
+
+            usuario.telegram_chat_id = message.chat.id
+
+            
+            db.session.query(Usuario).filter(Usuario.id==usuario.id).update({"telegram_chat_id":message.chat.id})
+
+            db.session.commit()
+
+
+        else:
+            texto += "Usuario no encontrado. \nInténtelo de nuevo dando click aquí: /iniciar_sesion"
+
+        bot.send_message(message.chat.id, texto)
+
+    else:
+        texto += "Usuario ya ha iniciado sesión. ¿Qué acción desea realizar ahora?"
+        texto += "/foto para recibir una foto de un lugar de tu casa \n"
+        texto += "/video para recibir un video de un lugar de tu casa \n"
+
+        bot.send_message(message.chat.id, texto)
+
+
+
+def verificar_si_inicio_sesion(chat_id):
+    app.app_context().push()
+
+    numero = Usuario.query.filter_by(telegram_chat_id=chat_id).count()
+
+    if numero > 0:
+        return True
+    else:
+        return False
+
+
+@bot.message_handler(commands=["foto"])
+def cmd_foto(message):
+    pass
 
 
 @app.route("/")
