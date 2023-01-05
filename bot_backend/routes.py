@@ -3,9 +3,10 @@ from bot_backend import app, bot, db, usuarioSeleccionado
 from flask_bcrypt import Bcrypt
 from bot_backend.forms import RegistrateMainUserForm, LoginForm, UpdateSubUserForm, RegistrateSubUserForm, RegistrateCameraForm, RegistrateHouseForm, EscogerUsuarioActualizar
 from bot_backend.models import Usuario, Casa, Camara
-from telebot.types import ForceReply
+from telebot.types import ForceReply, ReplyKeyboardMarkup
 from flask_login import login_user, current_user, logout_user, login_required
 import json
+import socket
 
 from sqlalchemy.orm import raiseload
 
@@ -124,7 +125,101 @@ def verificar_si_inicio_sesion(chat_id):
 
 @bot.message_handler(commands=["foto"])
 def cmd_foto(message):
-    pass
+    app.app_context().push()
+
+    usuario = Usuario.query.filter_by(telegram_chat_id=message.chat.id).first()
+
+    casa = Casa.query.filter_by(id=usuario.casa_id).first()
+
+    #print(casa)
+
+    camaras = diccionario_camaras(casa=casa)
+
+    markup = ReplyKeyboardMarkup(one_time_keyboard=True, 
+                input_field_placeholder="Pulsa un botón", 
+                resize_keyboard=True,
+                #numero de columnas
+                row_width=2)
+    
+    for ubicacion in camaras.keys():
+        #print(ubicacion)
+        markup.add(ubicacion)
+
+    markup.add("todos")
+           
+    msg = bot.send_message(message.chat.id, "Seleccione la ubicación: ", reply_markup=markup)
+
+    bot.register_next_step_handler(msg, conseguir_imagen)
+    
+
+def conseguir_imagen(message):
+    ubicacion = message.text
+
+    mi_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    mi_socket.connect(("192.168.18.149",8001))
+
+    mi_socket.send(ubicacion.encode())
+
+    
+    respuesta = mi_socket.recv(1024)
+
+    
+    print(respuesta.decode())
+
+    mi_socket.close()
+
+
+
+
+    print(ubicacion)
+
+
+
+@bot.message_handler(commands=["video"])
+def cmd_video(message):
+    app.app_context().push()
+
+    usuario = Usuario.query.filter_by(telegram_chat_id=message.chat.id).first()
+
+    casa = Casa.query.filter_by(id=usuario.casa_id).first()
+
+    #print(casa)
+
+    camaras = diccionario_camaras(casa=casa)
+
+    markup = ReplyKeyboardMarkup(one_time_keyboard=True, 
+                input_field_placeholder="Pulsa un botón", 
+                resize_keyboard=True,
+                #numero de columnas
+                row_width=2)
+    
+    for ubicacion in camaras.keys():
+        #print(ubicacion)
+        markup.add(ubicacion)
+           
+    msg = bot.send_message(message.chat.id, "Seleccione la ubicación: ", reply_markup=markup)
+
+    bot.register_next_step_handler(msg, conseguir_video)
+
+
+def conseguir_video(message):
+    ubicacion = message.text
+
+    print(ubicacion)  
+
+
+def diccionario_camaras(casa):
+    camaras = {}
+
+    for cam in range(len(casa.camaras)):
+        
+        camaras[casa.camaras[cam].ubicacion] = 1
+
+    return camaras
+
+
+
+
 
 
 @app.route("/")
